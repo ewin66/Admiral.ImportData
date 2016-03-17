@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" ?>
+<Application Title="Admiral.DataImport.Sample" Logo="ExpressAppLogo">
+  <Options>
+    <LayoutManagerOptions RequiredFieldMark="*" />
+  </Options>
+  <Views>
+  </Views>
+</Application>
