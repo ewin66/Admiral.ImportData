@@ -15,6 +15,8 @@ namespace Admiral.ImportData
     public interface IImportOption
     {
         IModelClass MainTypeInfo { get; set; }
+        decimal Progress { get; set; }
+        Action<decimal> UpdateProgress { get; set; }
     }
 
     public class ImportOption : IImportOption
@@ -23,6 +25,21 @@ namespace Admiral.ImportData
         {
             get; set;
         }
+
+        private decimal progress;
+
+        public decimal Progress
+        {
+            get { return progress; }
+            set
+            {
+                progress = value;
+                if (UpdateProgress != null)
+                    UpdateProgress(value);
+            }
+        }
+
+        public Action<decimal> UpdateProgress { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
@@ -49,6 +66,15 @@ namespace Admiral.ImportData
         }
 
         public IImportOption Option { get; set; }
+
+        private decimal _Progress;
+        [XafDisplayName("进度")][ModelDefault("AllowEdit","False")]
+        public decimal Progress
+        {
+            get { return _Progress; }
+            set { SetPropertyValue("Progress", ref _Progress, value); }
+        }
+
     }
 
     //弹出窗口后，根据元数据信息列举出字段名

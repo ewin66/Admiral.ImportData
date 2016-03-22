@@ -112,10 +112,12 @@
       <Name>System</Name>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing">
       <Private>False</Private>
     </Reference>
@@ -132,6 +134,7 @@
     <Compile Include="Controllers\WinImportViewController.Designer.cs">
       <DependentUpon>WinImportViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editors\Class1.cs" />
     <Compile Include="Editors\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

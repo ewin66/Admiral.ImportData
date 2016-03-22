@@ -21,6 +21,7 @@ namespace Admiral.ImportData.Win {
     public sealed partial class ImportDataWinModule : ModuleBase {
         public ImportDataWinModule() {
             InitializeComponent();
+            ExcelImporter.DoApplicationEvent = () => System.Windows.Forms.Application.DoEvents();
 			BaseObject.OidInitializationMode = OidInitializationMode.AfterConstruction;
         }
 

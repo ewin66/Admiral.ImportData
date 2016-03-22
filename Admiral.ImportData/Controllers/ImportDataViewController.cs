@@ -46,6 +46,9 @@ namespace Admiral.ImportData.Controllers
             var os = Application.CreateObjectSpace();
             var solution = os.CreateObject<ImportData>();
             solution.Option = new ImportOption();
+
+            solution.Option.UpdateProgress = (x) => solution.Progress = x;
+
             solution.Option.MainTypeInfo = (this.View as ListView).Model.ModelClass;
             var view = Application.CreateDetailView(os, solution,false);
 

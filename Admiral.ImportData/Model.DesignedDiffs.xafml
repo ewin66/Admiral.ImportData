@@ -6,7 +6,7 @@
     </Actions>
   </ActionDesign>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="15.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="15.2.7.0" IsNewNode="True" />
   </SchemaModules>
   <Views>
     <DetailView Id="ImportData_DetailView">

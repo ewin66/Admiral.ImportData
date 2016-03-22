@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using DevExpress.Data.Filtering;
@@ -12,6 +13,12 @@ using DevExpress.Xpo;
 
 namespace Admiral.ImportData
 {
+    public struct ProgressValue
+    {
+        public int MaxValue { get; set; }
+        public int CurrentValue { get; set; }
+    }
+
     public class ExcelImporter
     {
         XafApplication _application;
@@ -58,6 +65,8 @@ namespace Admiral.ImportData
             }
         }
 
+        public static Action DoApplicationEvent { get; set; }
+
         private bool StartImport(Worksheet ws, IModelClass bo, IObjectSpace os)
         {
             //开始导入:
@@ -88,13 +97,16 @@ namespace Admiral.ImportData
 
             for (int r = 2; r <= rowCount; r++)
             {
-                ws.Cells[r, 0].ClearContents();
+                //ws.Cells[r, 0].ClearContents();
 
                 for (int c = 1; c <= columnCount; c++)
                 {
                     var cel = ws.Cells[r, c];
-                    cel.FillColor = Color.Empty;
-                    cel.Font.Color = Color.Empty;
+                    if (cel.FillColor != Color.Empty)
+                        cel.FillColor = Color.Empty;
+
+                    if (cel.Font.Color != Color.Empty)
+                        cel.Font.Color = Color.Empty;
                 }
             }
 
@@ -117,12 +129,13 @@ namespace Admiral.ImportData
                     obj = os.CreateObject(bo.TypeInfo.Type) as XPBaseObject;
                 }
 
-                var result = new SheetRowObject(sheetContext) { Object = obj, Row = r, RowObject = ws.Rows[r] };
+                var result = new SheetRowObject(sheetContext) {Object = obj, Row = r, RowObject = ws.Rows[r]};
                 //var vle = ws.Cells[r, c];
                 for (int c = 1; c <= columnCount; c++)
                 {
                     var field = fields[c];
                     var cell = ws.Cells[r, c];
+
                     if (!cell.Value.IsEmpty)
                     {
                         object value = null;
@@ -267,6 +280,16 @@ namespace Admiral.ImportData
                     }
                 }
                 objs.Add(result);
+
+                if (DoApplicationEvent != null)
+                {
+                    DoApplicationEvent();
+
+                    this.option.Progress = ((r/(decimal)rowCount));
+                    //Debug.WriteLine(this.option.Progress);
+                    //var progress = ws.Cells[r, 0];
+                    //progress.SetValue("完成");
+                }
             }
 
             if (objs.All(x => !x.HasError)){
