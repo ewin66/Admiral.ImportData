@@ -70,6 +70,7 @@ namespace Admiral.ImportData
             var updateImport = bo.TypeInfo.FindAttribute<UpdateImportAttribute>();
             var isUpdateImport = updateImport != null;
             var keyColumn = 0;
+            IModelMember keyField = null;
             for (int c = 1; c <= columnCount; c++)
             {
                 var fieldCaption = ws.Cells[1, c].DisplayText;
@@ -78,6 +79,7 @@ namespace Admiral.ImportData
                 if (isUpdateImport && fieldName.Name == updateImport.KeyMember)
                 {
                     keyColumn = c;
+                    keyField = fieldName;
                 }
             }
 
@@ -101,7 +103,8 @@ namespace Admiral.ImportData
                 XPBaseObject obj;
                 if (isUpdateImport)
                 {
-                    var cri = new BinaryOperator(updateImport.KeyMember, ws.Cells[r, keyColumn].Value.ToObject());
+                    var cdvalue = Convert.ChangeType(ws.Cells[r, keyColumn].Value.ToObject(), keyField.Type);
+                    var cri = new BinaryOperator(updateImport.KeyMember, cdvalue);
                     obj = os.FindObject(bo.TypeInfo.Type, cri) as XPBaseObject;
                     if (obj == null)
                     {
@@ -123,7 +126,7 @@ namespace Admiral.ImportData
                     {
                         object value = null;
                         //引用类型
-                        if (typeof(XPBaseObject).IsAssignableFrom(field.MemberInfo.MemberType))
+                        if (typeof (XPBaseObject).IsAssignableFrom(field.MemberInfo.MemberType))
                         {
                             var conditionValue = cell.Value.ToObject();
                             //如果指定了查找条件，就直接使用
@@ -131,6 +134,7 @@ namespace Admiral.ImportData
                             var condition = idf == null ? "" : idf.Criteria;
 
                             #region 查找条件
+
                             if (string.IsNullOrEmpty(condition))
                             {
                                 //没指定查找条件，主键不是自动生成的，必定为手工输入
@@ -160,9 +164,11 @@ namespace Admiral.ImportData
                                     condition = ufield.Name + " = ? ";
                                 }
                             }
+
                             #endregion
 
                             #region p
+
                             if (string.IsNullOrEmpty(condition))
                             {
                                 result.AddErrorMessage(
@@ -197,10 +203,11 @@ namespace Admiral.ImportData
                                         cell);
                                 }
                             }
+
                             #endregion
 
                         }
-                        else if (field.MemberInfo.MemberType == typeof(DateTime))
+                        else if (field.MemberInfo.MemberType == typeof (DateTime))
                         {
                             if (cell.Value.IsEmpty)
                             {
@@ -211,10 +218,10 @@ namespace Admiral.ImportData
                                 value = cell.Value.DateTimeValue;
                             }
                         }
-                        else if (field.MemberInfo.MemberType == typeof(decimal) ||
-                                 field.MemberInfo.MemberType == typeof(int) ||
-                                 field.MemberInfo.MemberType == typeof(long) ||
-                                 field.MemberInfo.MemberType == typeof(short)
+                        else if (field.MemberInfo.MemberType == typeof (decimal) ||
+                                 field.MemberInfo.MemberType == typeof (int) ||
+                                 field.MemberInfo.MemberType == typeof (long) ||
+                                 field.MemberInfo.MemberType == typeof (short)
                             )
                         {
                             if (!cell.Value.IsNumeric)
@@ -226,7 +233,7 @@ namespace Admiral.ImportData
                                 value = Convert.ChangeType(cell.Value.NumericValue, field.MemberInfo.MemberType);
                             }
                         }
-                        else if (field.MemberInfo.MemberType == typeof(bool))
+                        else if (field.MemberInfo.MemberType == typeof (bool))
                         {
                             if (!cell.Value.IsNumeric)
                             {
@@ -237,9 +244,24 @@ namespace Admiral.ImportData
                                 value = cell.Value.BooleanValue;
                             }
                         }
-                        else if (field.MemberInfo.MemberType == typeof(string))
+                        else if (field.MemberInfo.MemberType == typeof (string))
                         {
-                            value = cell.Value.TextValue;
+                            var v = cell.Value.ToObject();
+                            if (v != null)
+                                value = v.ToString();
+                        }
+                        else if (field.MemberInfo.MemberType.IsEnum)
+                        {
+                            var names = field.MemberInfo.MemberType.GetEnumNames();
+                            if (names.Contains(cell.Value.TextValue))
+                            {
+                                value = Enum.Parse(field.MemberInfo.MemberType, cell.Value.TextValue);
+                            }
+                            else
+                            {
+                                result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
+                            }
+
                         }
                         obj.SetMemberValue(field.Name, value);
                     }

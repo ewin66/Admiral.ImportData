@@ -16,6 +16,7 @@ using DevExpress.Persistent.Validation;
 namespace Admiral.DataImport.Sample.Module.BusinessObjects
 {
     [DefaultClassOptions]
+    [UpdateImport("Code")]
     public class Order : BaseObject,IImportData
     { 
         public Order(Session session)
