@@ -93,7 +93,8 @@ namespace Admiral.ImportData
                 for (int c = 1; c <= columnCount; c++)
                 {
                     var cel = ws.Cells[r, c];
-                    cel.ClearFormats();
+                    cel.FillColor = Color.Empty;
+                    cel.Font.Color = Color.Empty;
                 }
             }
 
@@ -209,7 +210,7 @@ namespace Admiral.ImportData
                         }
                         else if (field.MemberInfo.MemberType == typeof (DateTime))
                         {
-                            if (cell.Value.IsEmpty)
+                            if (!cell.Value.IsDateTime)
                             {
                                 result.AddErrorMessage(string.Format("字段:{0},要求输入日期!", field.Name), cell);
                             }
@@ -261,7 +262,6 @@ namespace Admiral.ImportData
                             {
                                 result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
                             }
-
                         }
                         obj.SetMemberValue(field.Name, value);
                     }

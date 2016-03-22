@@ -11,7 +11,8 @@ namespace Admiral.ImportData
             var cells = workbook.Rows[1];
             for (int i = 1; i <= workbook.Columns.LastUsedIndex; i++)
             {
-                CaptionIndex.Add(cells[i].DisplayText, i);
+                if (!cells[i].Value.IsEmpty)
+                    CaptionIndex.Add(cells[i].DisplayText, i);
             }
         }
 
