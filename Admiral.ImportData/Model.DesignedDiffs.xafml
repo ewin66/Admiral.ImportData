@@ -15,6 +15,7 @@
           <LayoutGroup Id="SimpleEditors">
             <LayoutGroup Id="ImportData">
               <LayoutItem Id="Option" ShowCaption="False" />
+              <LayoutItem Id="Progress" ShowCaption="False" />
             </LayoutGroup>
           </LayoutGroup>
         </LayoutGroup>

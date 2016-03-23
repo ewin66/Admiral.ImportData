@@ -344,6 +344,8 @@ namespace Admiral.ImportData
                     CreateSheet(b, cls);
                 }
             }
+            if (book.Worksheets.Count > 0)
+                book.Worksheets.ActiveWorksheet = book.Worksheets[0];
         }
 
         private void CreateSheet(Worksheet book, IModelClass boInfo)
