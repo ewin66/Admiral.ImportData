@@ -74,16 +74,25 @@ namespace Admiral.ImportData
             var updateImport = bo.TypeInfo.FindAttribute<UpdateImportAttribute>();
             var isUpdateImport = updateImport != null;
             var keyColumn = 0;
+            var headerError = false;
             IModelMember keyField = null;
             for (int c = 1; c <= columnCount; c++)
             {
                 var fieldCaption = ws.Cells[1, c].DisplayText;
                 var fieldName = bo.AllMembers.SingleOrDefault(x => x.Caption == fieldCaption);
-                fields.Add(c, fieldName);
-                if (isUpdateImport && fieldName.Name == updateImport.KeyMember)
+                if (fieldName != null)
                 {
-                    keyColumn = c;
-                    keyField = fieldName;
+                    fields.Add(c, fieldName);
+                    if (isUpdateImport && fieldName.Name == updateImport.KeyMember)
+                    {
+                        keyColumn = c;
+                        keyField = fieldName;
+                    }
+                }
+                else
+                {
+                    ws.Cells[1, c].FillColor = Color.Red;
+                    headerError = true;
                 }
             }
 
@@ -104,6 +113,15 @@ namespace Admiral.ImportData
                         cel.Font.Color = Color.Empty;
                 }
             }
+            if (headerError)
+            {
+                ws.Cells[0, 4].SetValue("表头有错误，请查看被标红色的表头，确认行中没有对应的数据。");
+                return false;
+            }
+
+
+
+            
 
 
             for (int r = 2; r <= rowCount; r++)
@@ -125,9 +143,11 @@ namespace Admiral.ImportData
                 }
 
                 var result = new SheetRowObject(sheetContext) {Object = obj, Row = r, RowObject = ws.Rows[r]};
+               
                 //var vle = ws.Cells[r, c];
                 for (int c = 1; c <= columnCount; c++)
                 {
+                    
                     var field = fields[c];
                     var cell = ws.Cells[r, c];
 
