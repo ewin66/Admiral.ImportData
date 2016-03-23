@@ -244,7 +244,7 @@ namespace Admiral.ImportData
                         }
                         else if (field.MemberInfo.MemberType == typeof (bool))
                         {
-                            if (!cell.Value.IsNumeric)
+                            if (!cell.Value.IsBoolean)
                             {
                                 result.AddErrorMessage(string.Format("字段:{0},要求输入布尔值!", field.Name), cell);
                             }
