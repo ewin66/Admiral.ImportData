@@ -13,12 +13,6 @@ using DevExpress.Xpo;
 
 namespace Admiral.ImportData
 {
-    public struct ProgressValue
-    {
-        public int MaxValue { get; set; }
-        public int CurrentValue { get; set; }
-    }
-
     public class ExcelImporter
     {
         XafApplication _application;

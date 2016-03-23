@@ -14,11 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Admiral.ImportData;
-using DevExpress.ExpressApp.Editors;
-using DevExpress.XtraEditors;
 using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Win.Editors;
 using DevExpress.XtraEditors.Drawing;
 using DevExpress.XtraEditors.Registrator;
 using DevExpress.XtraEditors.Repository;
@@ -26,46 +22,6 @@ using DevExpress.XtraEditors.ViewInfo;
 
 namespace Admiral.DataImport.Editors.Win
 {
-    [PropertyEditor(typeof(decimal), false)]
-    public class WinProgressEdit : DXPropertyEditor
-    {
-        public WinProgressEdit(Type objectType, IModelMemberViewItem model) : base(objectType, model) { }
-        protected override object CreateControlCore()
-        {
-            return new TaskProgressBarControl();
-        }
-        protected override RepositoryItem CreateRepositoryItem()
-        {
-            return new RepositoryItemTaskProgressBarControl();
-        }
-        
-
-        protected override void SetupRepositoryItem(RepositoryItem item)
-        {
-            RepositoryItemTaskProgressBarControl repositoryItem = (RepositoryItemTaskProgressBarControl)item;
-            repositoryItem.Maximum = 100;
-            repositoryItem.Minimum = 0;
-            base.SetupRepositoryItem(item);
-        }
-    }
-    public class TaskProgressBarControl : ProgressBarControl
-    {
-        static TaskProgressBarControl()
-        {
-            
-            RepositoryItemTaskProgressBarControl.Register();
-        }
-        public override string EditorTypeName { get { return RepositoryItemTaskProgressBarControl.EditorName; } }
-        protected override object ConvertCheckValue(object val)
-        {
-            return val;
-        }
-
-        public TaskProgressBarControl()
-        {
-            base.Properties.Maximum = 100;
-        }
-    }
     public class RepositoryItemTaskProgressBarControl : RepositoryItemProgressBar
     {
         protected internal const string EditorName = "TaskProgressBarControl";

@@ -101,9 +101,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessObjects\ExcelImporter.cs" />
+    <Compile Include="BusinessObjects\IImportData.cs" />
+    <Compile Include="BusinessObjects\IImportOption.cs" />
+    <Compile Include="BusinessObjects\ImportData.cs" />
+    <Compile Include="BusinessObjects\ImportDefaultFilterCriteria.cs" />
     <Compile Include="BusinessObjects\ImportOption.cs" />
+    <Compile Include="BusinessObjects\ImportOptionsAttribute.cs" />
     <Compile Include="BusinessObjects\SheetContext.cs" />
     <Compile Include="BusinessObjects\SheetRowObject.cs" />
+    <Compile Include="BusinessObjects\UpdateImportAttribute.cs" />
     <Compile Include="Controllers\ImportDataViewController.cs">
       <SubType>Component</SubType>
     </Compile>
