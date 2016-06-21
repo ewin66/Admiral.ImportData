@@ -19,6 +19,8 @@ using DevExpress.ExpressApp.Xpo;
 namespace Admiral.ImportData {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppModuleBasetopic.aspx.
     public sealed partial class ImportDataModule : ModuleBase {
+        public object IModelAllowImport { get; private set; }
+
         public ImportDataModule() {
             InitializeComponent();
 			BaseObject.OidInitializationMode = OidInitializationMode.AfterConstruction;
@@ -27,6 +29,13 @@ namespace Admiral.ImportData {
             ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);
             return new ModuleUpdater[] { updater };
         }
+
+        public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
+        {
+            extenders.Add<IModelClass, IModelImportData>();
+            base.ExtendModelInterfaces(extenders);
+        }
+
         public override void Setup(XafApplication application) {
             base.Setup(application);
             // Manage various aspects of the application UI and behavior at the module level.

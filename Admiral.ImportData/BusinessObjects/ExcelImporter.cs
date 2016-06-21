@@ -13,6 +13,13 @@ using DevExpress.Xpo;
 
 namespace Admiral.ImportData
 {
+
+    public interface IModelImportData
+    {
+        bool AllowImportData { get; set; }
+    }
+
+
     public class ExcelImporter
     {
         XafApplication _application;

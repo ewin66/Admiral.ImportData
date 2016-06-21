@@ -17,19 +17,25 @@ using DevExpress.Persistent.Validation;
 namespace Admiral.ImportData.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
-    public partial class ImportDataViewController : ViewController
+    public partial class ImportDataViewController : ViewController<ListView>
     {
         public ImportDataViewController()
         {
             InitializeComponent();
-            TargetObjectType = typeof(IImportData);
+            //TargetObjectType = typeof(IImportData);
             // Target required Views (via the TargetXXX properties) and create their Actions.
         }
+
         protected override void OnActivated()
         {
+            this.ImportData.Active["AllowImport"] =
+                typeof (IImportData).IsAssignableFrom(View.Model.ModelClass.TypeInfo.Type) ||
+                (this.View.Model.ModelClass as IModelImportData).AllowImportData;
             base.OnActivated();
+
             // Perform various tasks depending on the target View.
         }
+
         protected override void OnViewControlsCreated()
         {
             base.OnViewControlsCreated();

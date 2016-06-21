@@ -1,8 +1,12 @@
-﻿<?xml version="1.0" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Title="Admiral.DataImport.Sample" Logo="ExpressAppLogo">
+  <BOModel>
+    <Class Name="Admiral.DataImport.Sample.Module.BusinessObjects.Order" AllowImportData="True" />
+  </BOModel>
   <Options>
     <LayoutManagerOptions RequiredFieldMark="*" />
   </Options>
-  <Views>
-  </Views>
+  <SchemaModules>
+    <SchemaModule Name="SystemModule" Version="15.2.9.0" IsNewNode="True" />
+  </SchemaModules>
 </Application>

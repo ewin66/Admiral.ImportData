@@ -17,7 +17,7 @@ namespace Admiral.DataImport.Sample.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [UpdateImport("Code")]
-    public class Order : BaseObject,IImportData
+    public class Order : BaseObject
     { 
         public Order(Session session)
             : base(session)

@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.XtraSpreadsheet;
 using DevExpress.XtraBars.Ribbon;
 using System.Windows.Forms;
+using DevExpress.ExpressApp.Utils;
 
 namespace Admiral.ImportData.Win.Editors
 {
@@ -94,7 +95,9 @@ namespace Admiral.ImportData.Win.Editors
             {
                 var item = new DevExpress.XtraBars.BarButtonItem();
                 item.Name = "ImportExcelData";
-                item.ImageUri.Uri = "AddNewDataSource";
+                item.Glyph = ImageLoader.Instance.GetLargeImageInfo("Action_ResumeRecording").Image;
+                item.LargeGlyph = item.Glyph;
+                //item.ImageUri.Uri = "AddNewDataSource";
                 item.Caption = "确定导入";
                
                 p.ItemLinks.Add(item);
