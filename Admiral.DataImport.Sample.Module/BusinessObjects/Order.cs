@@ -32,6 +32,7 @@ namespace Admiral.DataImport.Sample.Module.BusinessObjects
         }
 
         private DateTime _Date;
+        [RuleRequiredField]
         public DateTime Date
         {
             get { return _Date; }

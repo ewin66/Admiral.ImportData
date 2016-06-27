@@ -41,7 +41,7 @@ namespace Admiral.ImportData
             RowObject[0].Value = RowObject[0].DisplayText + "\n" + msg + "´íÎó×Ö¶Î:" + string.Join(",", properties);
             foreach (var item in properties)
             {
-                var cell = context.GetErrorCell(item, Row);
+                var cell = context.GetErrorCellByPropertyName(item, Row);
                 cell.FillColor = Color.Red;
                 cell.Font.Color = Color.White;
             }

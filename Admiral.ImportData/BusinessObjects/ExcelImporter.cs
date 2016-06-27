@@ -103,7 +103,8 @@ namespace Admiral.ImportData
                 }
             }
 
-            var sheetContext = new SheetContext(ws);
+            var sheetContext = new SheetContext(ws, fields.ToDictionary(x => x.Value.Name, x => x.Key));
+
             var rowCount = ws.Rows.LastUsedIndex;
 
             for (int r = 2; r <= rowCount; r++)

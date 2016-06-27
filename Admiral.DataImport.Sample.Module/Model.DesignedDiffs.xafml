@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Title="Admiral.DataImport.Sample" Logo="ExpressAppLogo">
   <BOModel>
-    <Class Name="Admiral.DataImport.Sample.Module.BusinessObjects.Order" AllowImportData="True" />
+    <Class Name="Admiral.DataImport.Sample.Module.BusinessObjects.Order" AllowImportData="True">
+      <OwnMembers>
+        <Member Name="Date" Caption="日期" />
+      </OwnMembers>
+    </Class>
   </BOModel>
   <Options>
     <LayoutManagerOptions RequiredFieldMark="*" />
