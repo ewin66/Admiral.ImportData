@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -79,7 +80,9 @@ namespace Admiral.ImportData
             var columnCount = ws.Columns.LastUsedIndex;
 
             var updateImport = bo.TypeInfo.FindAttribute<UpdateImportAttribute>();
+            var findObjectProviderAttribute = bo.TypeInfo.FindAttribute<FindObjectProviderAttribute>();
             var isUpdateImport = updateImport != null;
+
             var keyColumn = 0;
             var headerError = false;
             IModelMember keyField = null;
@@ -106,6 +109,7 @@ namespace Admiral.ImportData
             var sheetContext = new SheetContext(ws, fields.ToDictionary(x => x.Value.Name, x => x.Key));
 
             var rowCount = ws.Rows.LastUsedIndex;
+            ws.Workbook.BeginUpdate();
 
             for (int r = 2; r <= rowCount; r++)
             {
@@ -121,6 +125,8 @@ namespace Admiral.ImportData
                         cel.Font.Color = Color.Empty;
                 }
             }
+
+            ws.Workbook.EndUpdate();
             if (headerError)
             {
                 ws.Cells[0, 4].SetValue("表头有错误，请查看被标红色的表头，确认行中没有对应的数据。");
@@ -129,17 +135,35 @@ namespace Admiral.ImportData
 
 
 
-            
 
 
+            ws.Workbook.BeginUpdate();
             for (int r = 2; r <= rowCount; r++)
             {
-                XPBaseObject obj;
+                
+                
+                XPBaseObject obj = null;
                 if (isUpdateImport)
                 {
                     var cdvalue = Convert.ChangeType(ws.Cells[r, keyColumn].Value.ToObject(), keyField.Type);
                     var cri = new BinaryOperator(updateImport.KeyMember, cdvalue);
-                    obj = os.FindObject(bo.TypeInfo.Type, cri) as XPBaseObject;
+                    if (findObjectProviderAttribute != null)
+                    {
+                        var t = findObjectProviderAttribute.FindObject(os, bo.TypeInfo.Type, cri, true);
+                        if (t.Count > 0)
+                        {
+                            obj = t[0] as XPBaseObject;
+                        }
+                        else
+                        {
+                            t = null;
+                        }
+                    }
+                    else
+                    {
+                        obj = os.FindObject(bo.TypeInfo.Type, cri) as XPBaseObject;
+                    }
+
                     if (obj == null)
                     {
                         obj = os.CreateObject(bo.TypeInfo.Type) as XPBaseObject;
@@ -210,7 +234,7 @@ namespace Admiral.ImportData
                             {
                                 result.AddErrorMessage(
                                     string.Format(
-                                        "错误，没有为引用属性{}设置查找条件，查询过程中出现了错误，请修改查询询条!",
+                                        "错误，没有为引用属性{0}设置查找条件，查询过程中出现了错误，请修改查询询条!",
                                         field.MemberInfo.Name), cell);
                             }
                             else
@@ -218,7 +242,19 @@ namespace Admiral.ImportData
                                 try
                                 {
                                     var @operator = CriteriaOperator.Parse(condition, new object[] {conditionValue});
-                                    var list = os.GetObjects(field.MemberInfo.MemberType, @operator, true);
+
+
+                                    IList list = null;
+                                    if (findObjectProviderAttribute != null)
+                                    {
+                                        list = findObjectProviderAttribute.FindObject(os, field.MemberInfo.MemberType,
+                                            @operator, true);
+                                    }
+                                    else
+                                    {
+                                        list = os.GetObjects(field.MemberInfo.MemberType, @operator, true);
+
+                                    }
                                     if (list.Count != 1)
                                     {
                                         result.AddErrorMessage(
@@ -303,18 +339,21 @@ namespace Admiral.ImportData
                     }
                 }
                 objs.Add(result);
-
-                if (DoApplicationEvent != null)
+                if (r%1000 == 0)
                 {
-                    DoApplicationEvent();
+                    Debug.WriteLine("Process:" + r);
+                    if (DoApplicationEvent != null)
+                    {
+                        DoApplicationEvent();
 
-                    this.option.Progress = ((r/(decimal)rowCount));
-                    //Debug.WriteLine(this.option.Progress);
-                    //var progress = ws.Cells[r, 0];
-                    //progress.SetValue("完成");
+                        this.option.Progress = ((r/(decimal) rowCount));
+                        //Debug.WriteLine(this.option.Progress);
+                        //var progress = ws.Cells[r, 0];
+                        //progress.SetValue("完成");
+                    }
                 }
             }
-
+            ws.Workbook.EndUpdate();
             if (objs.All(x => !x.HasError)){
                 try
                 {
@@ -324,6 +363,7 @@ namespace Admiral.ImportData
                 catch (ValidationException msgs)
                 {
                     var rst = true;
+                    ws.Workbook.BeginUpdate();
                     foreach (var item in msgs.Result.Results)
                     {
                         if (item.Rule.Properties.ResultType == ValidationResultType.Error && item.State == ValidationState.Invalid)
@@ -336,9 +376,12 @@ namespace Admiral.ImportData
                             rst &= false;
                         }
                     }
+                    ws.Workbook.EndUpdate();
                     return rst;
                 }
             }
+
+
             return false;
         }
 

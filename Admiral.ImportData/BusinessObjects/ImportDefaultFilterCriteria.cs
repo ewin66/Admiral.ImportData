@@ -20,4 +20,6 @@ namespace Admiral.ImportData
         // Properties
         public string Criteria { get; set; }
     }
+
+    
 }
