@@ -136,7 +136,9 @@ namespace Admiral.ImportData
 
 
 
-
+            var updateStep = rowCount/100;
+            if (updateStep == 0)
+                updateStep = 1;
             ws.Workbook.BeginUpdate();
             for (int r = 2; r <= rowCount; r++)
             {
@@ -255,6 +257,8 @@ namespace Admiral.ImportData
                                         list = os.GetObjects(field.MemberInfo.MemberType, @operator, true);
 
                                     }
+                                    if (field.Caption == "办事处")
+                                        Debug.WriteLine(list.Count + "," + field.Caption, @operator.ToString());
                                     if (list.Count != 1)
                                     {
                                         result.AddErrorMessage(
@@ -338,15 +342,16 @@ namespace Admiral.ImportData
                         obj.SetMemberValue(field.Name, value);
                     }
                 }
+                
                 objs.Add(result);
-                if (r%1000 == 0)
+                if ((r-2)%updateStep == 0)
                 {
                     Debug.WriteLine("Process:" + r);
                     if (DoApplicationEvent != null)
                     {
                         DoApplicationEvent();
 
-                        this.option.Progress = ((r/(decimal) rowCount));
+                        this.option.Progress = ((r/(decimal) rowCount)+0.01m );
                         //Debug.WriteLine(this.option.Progress);
                         //var progress = ws.Cells[r, 0];
                         //progress.SetValue("完成");
