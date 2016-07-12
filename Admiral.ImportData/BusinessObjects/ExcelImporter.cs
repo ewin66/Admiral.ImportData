@@ -81,6 +81,7 @@ namespace Admiral.ImportData
 
             var updateImport = bo.TypeInfo.FindAttribute<UpdateImportAttribute>();
             var findObjectProviderAttribute = bo.TypeInfo.FindAttribute<FindObjectProviderAttribute>();
+            findObjectProviderAttribute?.Reset();
             var isUpdateImport = updateImport != null;
 
             var keyColumn = 0;
@@ -189,7 +190,9 @@ namespace Admiral.ImportData
                     {
                         object value = null;
                         //引用类型
-                        if (typeof (XPBaseObject).IsAssignableFrom(field.MemberInfo.MemberType))
+                        //兼容DC类型
+                        
+                        if (typeof (XPBaseObject).IsAssignableFrom(field.MemberInfo.MemberType) || field.MemberInfo.MemberTypeInfo.IsDomainComponent)
                         {
                             var conditionValue = cell.Value.ToObject();
                             //如果指定了查找条件，就直接使用
@@ -329,15 +332,44 @@ namespace Admiral.ImportData
                         }
                         else if (field.MemberInfo.MemberType.IsEnum)
                         {
-                            var names = field.MemberInfo.MemberType.GetEnumNames();
-                            if (names.Contains(cell.Value.TextValue))
+                            if (cell.Value.IsNumeric)
                             {
-                                value = Enum.Parse(field.MemberInfo.MemberType, cell.Value.TextValue);
+                                var vle = Convert.ToInt64(cell.Value.NumericValue);
+                                var any =
+                                    Enum.GetValues(field.MemberInfo.MemberType)
+                                        .OfType<object>()
+                                        .Any(
+                                            x =>
+                                            {
+                                                return object.Equals(Convert.ToInt64(x), vle);
+                                            }
+                                        );
+                                
+                                
+                                if (any)
+                                {
+                                    value = Enum.ToObject(field.MemberInfo.MemberType, vle);
+                                    // cell.Value.NumericValue;    
+                                }
+                                else
+                                {
+                                    result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
+                                }
+
                             }
                             else
                             {
-                                result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
+                                var names = field.MemberInfo.MemberType.GetEnumNames();
+                                if (names.Contains(cell.Value.TextValue))
+                                {
+                                    value = Enum.Parse(field.MemberInfo.MemberType, cell.Value.TextValue);
+                                }
+                                else
+                                {
+                                    result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
+                                }
                             }
+                            
                         }
                         obj.SetMemberValue(field.Name, value);
                     }

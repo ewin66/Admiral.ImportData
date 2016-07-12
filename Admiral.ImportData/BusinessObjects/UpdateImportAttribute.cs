@@ -28,6 +28,11 @@ namespace Admiral.ImportData
         {
         }
 
+        public void Reset()
+        {
+            cache.Clear();
+        }
+
         private Dictionary<Type, Dictionary<object,object>> cache = new Dictionary<Type, Dictionary<object,object>>();
 
         public virtual List<object> FindObject(IObjectSpace os, Type t, CriteriaOperator criteria, bool inTrans)
