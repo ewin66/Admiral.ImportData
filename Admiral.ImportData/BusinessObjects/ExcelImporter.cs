@@ -7,6 +7,7 @@ using System.Linq;
 using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.Xpo;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Spreadsheet;
@@ -37,7 +38,8 @@ namespace Admiral.ImportData
         }
         public void ProcessImportAction(IWorkbook document)
         {
-            var os = _application.CreateObjectSpace();
+            var os = _application.CreateObjectSpace() as XPObjectSpace;
+            os.Session.BeginTransaction();
             bool rst = true;
             foreach (var item in document.Worksheets)
             {
@@ -56,15 +58,18 @@ namespace Admiral.ImportData
             {
                 try
                 {
-                    os.CommitChanges();
+                    os.Session.CommitTransaction();
+                    //os.CommitChanges();
                 }
                 catch (Exception ex)
                 {
-                    os.Rollback();
+                    os.Session.RollbackTransaction();
+                    //os.Rollback();
                 }
             }
             else {
-                os.Rollback();
+                //os.Rollback();
+                os.Session.RollbackTransaction();
             }
         }
 
@@ -140,6 +145,13 @@ namespace Admiral.ImportData
             var updateStep = rowCount/100;
             if (updateStep == 0)
                 updateStep = 1;
+
+            var numberTypes = new[]
+            {
+                typeof(Int16),typeof(Int32),typeof(Int64),typeof(UInt16),typeof(UInt32),typeof(UInt64),typeof(decimal),typeof(float),typeof(double),
+                typeof(byte),typeof(sbyte)
+            };
+
             ws.Workbook.BeginUpdate();
             for (int r = 2; r <= rowCount; r++)
             {
@@ -191,9 +203,18 @@ namespace Admiral.ImportData
                         object value = null;
                         //引用类型
                         //兼容DC类型
-                        
-                        if (typeof (XPBaseObject).IsAssignableFrom(field.MemberInfo.MemberType) || field.MemberInfo.MemberTypeInfo.IsDomainComponent)
+                        var memberType = field.MemberInfo.MemberType;
+                        if (memberType.IsValueType && memberType.IsGenericType)
                         {
+                            if (memberType.GetGenericTypeDefinition() == typeof (Nullable<>))
+                            {
+                                memberType = memberType.GetGenericArguments()[0];
+                            }
+                        }
+
+                        if (typeof (XPBaseObject).IsAssignableFrom(memberType) || field.MemberInfo.MemberTypeInfo.IsDomainComponent)
+                        {
+                            #region 引用类型
                             var conditionValue = cell.Value.ToObject();
                             //如果指定了查找条件，就直接使用
                             var idf = field.MemberInfo.FindAttribute<ImportDefaultFilterCriteria>();
@@ -286,8 +307,10 @@ namespace Admiral.ImportData
 
                             #endregion
 
+                            #endregion
+
                         }
-                        else if (field.MemberInfo.MemberType == typeof (DateTime))
+                        else if (memberType == typeof (DateTime))
                         {
                             if (!cell.Value.IsDateTime)
                             {
@@ -298,11 +321,7 @@ namespace Admiral.ImportData
                                 value = cell.Value.DateTimeValue;
                             }
                         }
-                        else if (field.MemberInfo.MemberType == typeof (decimal) ||
-                                 field.MemberInfo.MemberType == typeof (int) ||
-                                 field.MemberInfo.MemberType == typeof (long) ||
-                                 field.MemberInfo.MemberType == typeof (short)
-                            )
+                        else if (numberTypes.Contains(memberType))
                         {
                             if (!cell.Value.IsNumeric)
                             {
@@ -313,7 +332,7 @@ namespace Admiral.ImportData
                                 value = Convert.ChangeType(cell.Value.NumericValue, field.MemberInfo.MemberType);
                             }
                         }
-                        else if (field.MemberInfo.MemberType == typeof (bool))
+                        else if (memberType == typeof (bool))
                         {
                             if (!cell.Value.IsBoolean)
                             {
@@ -324,16 +343,18 @@ namespace Admiral.ImportData
                                 value = cell.Value.BooleanValue;
                             }
                         }
-                        else if (field.MemberInfo.MemberType == typeof (string))
+                        else if (memberType == typeof (string))
                         {
                             var v = cell.Value.ToObject();
                             if (v != null)
                                 value = v.ToString();
                         }
-                        else if (field.MemberInfo.MemberType.IsEnum)
+                        else if (memberType.IsEnum)
                         {
+                            #region 枚举
                             if (cell.Value.IsNumeric)
                             {
+                                #region 填写的是数字
                                 var vle = Convert.ToInt64(cell.Value.NumericValue);
                                 var any =
                                     Enum.GetValues(field.MemberInfo.MemberType)
@@ -344,8 +365,8 @@ namespace Admiral.ImportData
                                                 return object.Equals(Convert.ToInt64(x), vle);
                                             }
                                         );
-                                
-                                
+
+
                                 if (any)
                                 {
                                     value = Enum.ToObject(field.MemberInfo.MemberType, vle);
@@ -355,10 +376,12 @@ namespace Admiral.ImportData
                                 {
                                     result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
                                 }
+                                #endregion
 
                             }
                             else
                             {
+                                #region 填写的是字符
                                 var names = field.MemberInfo.MemberType.GetEnumNames();
                                 if (names.Contains(cell.Value.TextValue))
                                 {
@@ -368,8 +391,13 @@ namespace Admiral.ImportData
                                 {
                                     result.AddErrorMessage(string.Format("字段:{0},所填写的枚举值，没在定义中出现!", field.Name), cell);
                                 }
+                                #endregion
                             }
-                            
+                            #endregion
+                        }
+                        else
+                        {
+                            value = cell.Value.ToObject();
                         }
                         obj.SetMemberValue(field.Name, value);
                     }
