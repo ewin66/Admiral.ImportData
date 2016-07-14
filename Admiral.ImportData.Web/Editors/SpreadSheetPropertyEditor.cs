@@ -27,6 +27,8 @@ namespace Admiral.ImportData.Module.Web.Editors
     [PropertyEditor(typeof(IImportOption), true)]
     public class ASPxSpreadsheetPropertyEditor : ASPxPropertyEditor, IComplexControl, IComplexViewItem, IXafCallbackHandler
     {
+        public static bool IsNewStyle { get; set; }
+        public static string SkinName { get; set; }
         // Fields
         private ASPxSpreadsheet _spreadsheet;
 
@@ -56,8 +58,14 @@ namespace Admiral.ImportData.Module.Web.Editors
             _spreadsheet.ClientSideEvents.Init = "function(s, e){ s.SetFullscreenMode(true); }";
             _spreadsheet.Height = 800;
             _spreadsheet.CreateDefaultRibbonTabs(true);
+            _spreadsheet.ActiveTabIndex = 0;//默认标签行这个可以打开的时候默认第一个导入的标签
 
             //_spreadsheet.ClientSideEvents.CustomCommandExecuted
+            if (IsNewStyle)
+            {
+                _spreadsheet.ClientSideEvents.Init = "function(s, e){ s.SetFullscreenMode(false); }";
+                _spreadsheet.Theme = "Aqua";
+            }
 
             _spreadsheet.Load += (s, e) =>
             {
