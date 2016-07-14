@@ -41,6 +41,7 @@ namespace Admiral.ImportData
             var os = _application.CreateObjectSpace() as XPObjectSpace;
             os.Session.BeginTransaction();
             bool rst = true;
+
             foreach (var item in document.Worksheets)
             {
                 var typeName = item.Cells[0, 1].DisplayText;
@@ -119,7 +120,7 @@ namespace Admiral.ImportData
 
             var rowCount = ws.Rows.LastUsedIndex;
             ws.Workbook.BeginUpdate();
-
+            //清理上次的结果.
             for (int r = 2; r <= rowCount; r++)
             {
                 //ws.Cells[r, 0].ClearContents();
@@ -132,6 +133,12 @@ namespace Admiral.ImportData
 
                     if (cel.Font.Color != Color.Empty)
                         cel.Font.Color = Color.Empty;
+                }
+
+                var errorCell = ws.Cells[r, 0];
+                if (!errorCell.Value.IsEmpty)
+                {
+                    errorCell.Clear();
                 }
             }
 
