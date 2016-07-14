@@ -86,7 +86,10 @@ namespace Admiral.ImportData
 
             var updateImport = bo.TypeInfo.FindAttribute<UpdateImportAttribute>();
             var findObjectProviderAttribute = bo.TypeInfo.FindAttribute<FindObjectProviderAttribute>();
-            findObjectProviderAttribute?.Reset();
+
+            if (findObjectProviderAttribute != null)
+                findObjectProviderAttribute.Reset();
+
             var isUpdateImport = updateImport != null;
 
             var keyColumn = 0;
