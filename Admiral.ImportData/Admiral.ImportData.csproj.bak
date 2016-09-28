@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Admiral.ImportData</RootNamespace>
     <AssemblyName>Admiral.ImportData</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -44,35 +44,41 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.ExpressApp.ConditionalAppearance.v15.1, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.ExpressApp.ConditionalAppearance.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.Objects.v15.1, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.ExpressApp.Objects.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.Validation.v15.1, Version=15.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.ExpressApp.Validation.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.Xpo.v15.1">
+    <Reference Include="DevExpress.ExpressApp.Xpo.v15.2">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DevExpress.Printing.v15.1.Core">
+    <Reference Include="DevExpress.Office.v15.2.Core, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Data.v15.1">
+    <Reference Include="DevExpress.Printing.v15.2.Core">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.v15.1">
+    <Reference Include="DevExpress.Data.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Persistent.Base.v15.1">
+    <Reference Include="DevExpress.ExpressApp.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Persistent.BaseImpl.v15.1">
+    <Reference Include="DevExpress.Persistent.Base.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Xpo.v15.1">
+    <Reference Include="DevExpress.Persistent.BaseImpl.v15.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Spreadsheet.v15.2.Core, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System">
@@ -86,13 +92,24 @@
     <Reference Include="System.Drawing">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessObjects\ExcelImporter.cs" />
+    <Compile Include="BusinessObjects\IImportData.cs" />
+    <Compile Include="BusinessObjects\IImportOption.cs" />
+    <Compile Include="BusinessObjects\ImportData.cs" />
+    <Compile Include="BusinessObjects\ImportDefaultFilterCriteria.cs" />
     <Compile Include="BusinessObjects\ImportOption.cs" />
+    <Compile Include="BusinessObjects\ImportOptionsAttribute.cs" />
+    <Compile Include="BusinessObjects\SheetContext.cs" />
+    <Compile Include="BusinessObjects\SheetRowObject.cs" />
+    <Compile Include="BusinessObjects\UpdateImportAttribute.cs" />
     <Compile Include="Controllers\ImportDataViewController.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -120,6 +137,7 @@
     <EmbeddedResource Include="Properties\licenses.licx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="DatabaseUpdate\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +155,9 @@
     <EmbeddedResource Include="Images\ImportData_24x24.png" />
     <EmbeddedResource Include="Images\ImportData_32x32.png" />
     <EmbeddedResource Include="Images\ImportData_48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

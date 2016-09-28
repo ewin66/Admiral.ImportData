@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5F15837D-D1E5-44DC-92F0-4F2EBE9C3F8D}</ProjectGuid>
+    <ProjectGuid>{0C729AAD-7626-4668-A7F1-35F7D240489D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Admiral.DataImport.Sample.Module</RootNamespace>
-    <AssemblyName>Admiral.DataImport.Sample.Module</AssemblyName>
+    <RootNamespace>Admiral.DataImport.Sample.Module.Web</RootNamespace>
+    <AssemblyName>Admiral.DataImport.Sample.Module.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -17,6 +17,21 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,103 +59,105 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Admiral.ImportData">
-      <HintPath>..\Admiral.ImportData\obj\Debug\Admiral.ImportData.dll</HintPath>
+    <Reference Include="Admiral.ImportData.Web">
+      <HintPath>..\Admiral.ImportData.Web\obj\Debug\Admiral.ImportData.Web.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.ConditionalAppearance.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.ExpressApp.Validation.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.Objects.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.ExpressApp.Validation.Web.v15.2, Version=15.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.Validation.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Printing.v15.2.Core">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.Xpo.v16.1">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="DevExpress.Office.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Pdf.v16.1.Core">
+    <Reference Include="DevExpress.Data.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Printing.v16.1.Core">
+    <Reference Include="DevExpress.ExpressApp.Xpo.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Data.v16.1">
+    <Reference Include="DevExpress.ExpressApp.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.ExpressApp.v16.1">
+    <Reference Include="DevExpress.ExpressApp.Images.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Persistent.Base.v16.1">
+    <Reference Include="DevExpress.ExpressApp.Web.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Persistent.BaseImpl.v16.1">
+    <Reference Include="DevExpress.Persistent.Base.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="DevExpress.Charts.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Spreadsheet.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Xpo.v16.1">
+    <Reference Include="DevExpress.Persistent.BaseImpl.v15.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Web.v15.2">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v15.2">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System">
-      <Name>System</Name>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data">
-      <Name>System.Data</Name>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Drawing">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml">
-      <Name>System.XML</Name>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessObjects\Order.cs" />
-    <Compile Include="DatabaseUpdate\Updater.cs" />
-    <Compile Include="Module.cs">
+    <Compile Include="WebModule.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Module.Designer.cs">
-      <DependentUpon>Module.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebModule.Designer.cs">
+      <DependentUpon>WebModule.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
-    <EmbeddedResource Include="Module.resx">
+    <EmbeddedResource Include="WebModule.resx">
+      <DependentUpon>WebModule.cs</DependentUpon>
       <SubType>Designer</SubType>
-      <DependentUpon>Module.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DatabaseUpdate\ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BusinessObjects\ReadMe.txt" />
+    <ProjectReference Include="..\Admiral.DataImport.Sample.Module\Admiral.DataImport.Sample.Module.csproj">
+      <Project>{5F15837D-D1E5-44DC-92F0-4F2EBE9C3F8D}</Project>
+      <Name>Admiral.DataImport.Sample.Module</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Controllers\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FunctionalTests\ReadMe.txt" />
+    <None Include="Editors\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FunctionalTests\sample.ets" />
     <None Include="Images\ReadMe.txt" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FunctionalTests\config.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Welcome.html" />
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
